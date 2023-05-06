@@ -1,0 +1,15 @@
+{% load sidebar_tags %}
+
+<div class="list-group">
+    {% get_categories as category %}
+    {% load mptt_tags %}
+    {% recursetree category %}
+
+    <a href="" class="list-group-item list-group-item-action" aria-current="true">{{ node.name }}</a>
+        {% if not node.is_leaf_node %}	
+            <a><i class="icon-chevron-right"></i>{{ children }}</a>
+        {% endif %}	
+
+    {% endrecursetree %}
+
+</div>

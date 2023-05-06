@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>{{ alimony.user }}</h2>
+    <p>{{ alimony.executor }}</p>
+    <p>{{ alimony.ruling }}</p>
+    <p>{{ alimony.ruling_date }}</p>
+    <p>{{ alimony.must_pay.first_name }}</p>
+    <p>{{ alimony.must_pay.last_name }}</p>
+    <p>{{ alimony.must_pay.birthday }}</p>
+    <p>{{ alimony.must_pay.receipt.last_payment }}</p>
+    <p>{{ alimony.must_pay.receipt.last_payment_date }}</p>
+    <p>{{ alimony.must_pay.receipt.currency }}</p>
+    <p>{{ alimony.recipient.first_name }}</p>
+    <p>{{ alimony.recipient.last_name }}</p>
+    <p>{{ alimony.recipient.birthday }}</p>
+    <p>{{ alimony.recipient.child.first_name }}</p>
+    <p>{{ alimony.recipient.child.last_name }}</p>
+    <p>{{ alimony.recipient.child.birthday }}</p>
+    <p>{{ alimony.note }}</p>
+
+    <hr>
+
+
+{% endblock content %}
