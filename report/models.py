@@ -7,7 +7,7 @@ from decimal import Decimal
 
 class Category(MPTTModel):
     """Категории"""
-    name = models.CharField("Имя", max_length=100, unique=True)
+    name = models.CharField("Имя", max_length=100)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     slug = models.SlugField('url', max_length=100, unique=True)
 
@@ -17,25 +17,31 @@ class Category(MPTTModel):
     def get_absolute_url(self):
         return reverse('alimony-list', kwargs={'slug': self.slug})
 
+class Address(models.Model):
+    city = models.CharField(max_length=100, verbose_name='Saher')
+    region = models.CharField(max_length=100, verbose_name='Etrap')
+    street = models.CharField(max_length=100, verbose_name='Koce')
+    apartment_number = models.IntegerField(verbose_name='Oy belgisi')
+
     class MPTTMeta:
-        order_insertion_by = ['name']
-        verbose_name = "Bolum"
-        verbose_name_plural = "Bolumler"        
+        order_insertion_by = ['city']
+        verbose_name = "Saher"
+        verbose_name_plural = "Saherler"
 
 
 class MustPay(models.Model):
     JOB_CHOICES = [
-        (1, 'Hokumet edara'),
-        (2, 'Firma'),
-        (3, 'Islanok')
+        ('Hokumet edara', 'Hokumet edara'),
+        ('Firma', 'Firma'),
+        ('Islanok', 'Islanok')
     ]
     """Должник"""
     first_name = models.CharField(verbose_name='Bergidaryn ady', max_length=200)
     last_name = models.CharField(verbose_name='Bergidaryn Familiyasy', max_length=200)
     birthday = models.DateField(verbose_name='Doglan senesi')
     phone_number = models.CharField(max_length=12, verbose_name='Telefon belgisi 1')
-    phone_number = models.CharField(max_length=12, verbose_name='Telefon belgisi 2')
-    address = models.CharField(max_length=200, verbose_name='Oy salgysy')
+    phone_number_2 = models.CharField(max_length=12, verbose_name='Telefon belgisi 2')
+    address = models.ForeignKey(Address, verbose_name='Oy salgysy', on_delete=models.SET_NULL, null=True)
     document_scan = models.FileField(verbose_name='Passport nusgasy', upload_to="file/", blank=True, null=True)
     job_status = models.CharField(max_length=100, verbose_name='Isin gornusi', choices=JOB_CHOICES)
 
@@ -59,8 +65,8 @@ class MustPay(models.Model):
 
 class MustPayReceipt(models.Model):
     CURRENCY_CHOICES = [
-        (1, 'TMT'),
-        (2, 'USD')
+        ('TMT', 'TMT'),
+        ('USD', 'USD')
     ]
     """Оплата должника"""
     must_pay = models.ForeignKey(MustPay, on_delete=models.CASCADE)
@@ -91,8 +97,6 @@ class Recipient(models.Model):
     phone_number = models.CharField(max_length=12, verbose_name='Telefon belgisi')
     # TODO: для slug генерить путь (user, must_pay)
     document_scan = models.FileField(verbose_name='Passport nusgasy', upload_to="file/", blank=True, null=True)
-    # TODO: для slug генерить путь (first_name, last_name)
-    slug = models.SlugField("url", max_length=50, unique=True)
 
     def __str__(self):
         return f'{self.first_name} - {self.last_name}'
